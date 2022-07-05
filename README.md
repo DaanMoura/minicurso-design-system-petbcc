@@ -1,181 +1,245 @@
-# TSDX React w/ Storybook User Guide
 
-Congrats! You just saved yourself hours of work by bootstrapping this project with TSDX. Let’s get you oriented with what’s here and how to use it.
+Desenvolvimento de Design System com React e Storybook - Minicurso PET-BCC
 
-> This TSDX setup is meant for developing React component libraries (not apps!) that can be published to NPM. If you’re looking to build a React-based app, you should use `create-react-app`, `razzle`, `nextjs`, `gatsby`, or `react-static`.
+# Sumário
+- [Design System](#design-system)
+- [Desenvolvimento](#desenvolvimento)
+- [NPM](#npm)
+- [Referências](#referências)
 
-> If you’re new to TypeScript and React, checkout [this handy cheatsheet](https://github.com/sw-yx/react-typescript-cheatsheet/)
+# Design System
 
-## Commands
 
-TSDX scaffolds your new library inside `/src`, and also sets up a [Parcel-based](https://parceljs.org) playground for it inside `/example`.
+Design System é um conjunto de componentes e propriedades de desing	para facilitar o desenvolvimento de um produto mantendo a mesma identidade visual.
 
-The recommended workflow is to run TSDX in one terminal:
+É interessante pensar no Design System como um produto que serve outros produtos:
+
+> [A Design System isn’t a Project. It’s a Product, Serving Products.](https://medium.com/eightshapes-llc/a-design-system-isn-t-a-project-it-s-a-product-serving-products-74dcfffef935)
+
+Assim como um produto, ele não é estático, muda conforme as necessidades de quem irá usar. E também deve ser intuitivo e fácil de testar e utilizar.
+
+Uma grande vantagem de um design system é poder reutilizar componentes e estilos em em outros produtos. Isso acaba diminuindo o tempo de desenvolvimento e logo, aumentando a produtividade.
+
+Exemplos:
+- [Github / Primer](https://primer.style/)
+- [Material Design](https://material.io/)
+- [Polaris](https://polaris.shopify.com/)
+
+Tem alguns sites, produtos que percebemos bastante inconsistências que provavelmente não possuem um design system bem definido:
+- [Steam](https://store.steampowered.com/)
+- [AWS (console)](https://aws.amazon.com/)
+- [Yale School of Art](https://www.art.yale.edu/)
+
+# Desenvolvimento
+A concepção de um design system vem dos UX e UI designers. Mas um bom design sytem é acompanhado de códigos, para implementar os componentes e propriedades definidas pelos designers. 
+
+Uma boa forma de realizar essa implementação é desenvolver uma biblioteca, para ser utilizado em vários projetos. Nesse caso, será desenvolvido um pacote npm de componentes em React com a documentação num Storybook.
+
+### Configurações iniciais
+
+Será implementado um design system bem simples definido [nesse figma](https://www.figma.com/file/cIbhpCKPl3n93tIheKhLR1/Minicurso-PET-BCC?node-id=0%3A1).
+
+No diretorio onde vai estar seu projeto rode o seguinte comando para gerar um template com react e storybook:
 
 ```bash
-npm start # or yarn start
+npx tsdx create minicurso-petbcc
 ```
 
-This builds to `/dist` and runs the project in watch mode so any edits you save inside `src` causes a rebuild to `/dist`.
+e selecione a opção react-with-storybook.
 
-Then run either Storybook or the example playground:
-
-### Storybook
-
-Run inside another terminal:
+Depois instale [styled-components](https://github.com/styled-components/styled-components), um pacote para estilizar os componentes com css-in-js, rodando:
 
 ```bash
-yarn storybook
+npm install styled-components
+npm install -D @types/styled-components
 ```
 
-This loads the stories from `./stories`.
-
-> NOTE: Stories should reference the components as if using the library, similar to the example playground. This means importing from the root project directory. This has been aliased in the tsconfig and the storybook webpack config as a helper.
-
-### Example
-
-Then run the example inside another:
-
+Ao rodar:
 ```bash
-cd example
-npm i # or yarn to install dependencies
-npm start # or yarn start
+npm run storybook
 ```
 
-The default example imports and live reloads whatever is in `/dist`, so if you are seeing an out of date component, make sure TSDX is running in watch mode like we recommend above. **No symlinking required**, we use [Parcel's aliasing](https://parceljs.org/module_resolution.html#aliases).
+será iniciado o storybook de exemplo.
 
-To do a one-off build, use `npm run build` or `yarn build`.
-
-To run tests, use `npm test` or `yarn test`.
-
-## Configuration
-
-Code quality is set up for you with `prettier`, `husky`, and `lint-staged`. Adjust the respective fields in `package.json` accordingly.
-
-### Jest
-
-Jest tests are set up to run with `npm test` or `yarn test`.
-
-### Bundle analysis
-
-Calculates the real cost of your library using [size-limit](https://github.com/ai/size-limit) with `npm run size` and visulize it with `npm run analyze`.
-
-#### Setup Files
-
-This is the folder structure we set up for you:
-
-```txt
-/example
-  index.html
-  index.tsx       # test your component here in a demo app
-  package.json
-  tsconfig.json
-/src
-  index.tsx       # EDIT THIS
-/test
-  blah.test.tsx   # EDIT THIS
-/stories
-  Thing.stories.tsx # EDIT THIS
-/.storybook
-  main.js
-  preview.js
-.gitignore
-package.json
-README.md         # EDIT THIS
-tsconfig.json
-```
-
-#### React Testing Library
-
-We do not set up `react-testing-library` for you yet, we welcome contributions and documentation on this.
-
-### Rollup
-
-TSDX uses [Rollup](https://rollupjs.org) as a bundler and generates multiple rollup configs for various module formats and build settings. See [Optimizations](#optimizations) for details.
-
-### TypeScript
-
-`tsconfig.json` is set up to interpret `dom` and `esnext` types, as well as `react` for `jsx`. Adjust according to your needs.
-
-## Continuous Integration
-
-### GitHub Actions
-
-Two actions are added by default:
-
-- `main` which installs deps w/ cache, lints, tests, and builds on all pushes against a Node and OS matrix
-- `size` which comments cost comparison of your library on every pull request using [size-limit](https://github.com/ai/size-limit)
-
-## Optimizations
-
-Please see the main `tsdx` [optimizations docs](https://github.com/palmerhq/tsdx#optimizations). In particular, know that you can take advantage of development-only optimizations:
-
+Adicione a string ``'../src/**/*.stories.@(js|jsx|ts|tsx)'`` no arquivo ``.storybook/main.js``:
 ```js
-// ./types/index.d.ts
-declare var __DEV__: boolean;
-
-// inside your code...
-if (__DEV__) {
-  console.log('foo');
+module.exports = {
+	stories: [
+		// ... ,
+		'../src/**/*.stories.@(js|jsx|ts|tsx)'
+	],
+	// ...
 }
 ```
 
-You can also choose to install and use [invariant](https://github.com/palmerhq/tsdx#invariant) and [warning](https://github.com/palmerhq/tsdx#warning) functions.
+Caso preferir, apague os arquivos de exemplo:
+- ``src/index.ts``
+- ``stories/Thing.stories.tsx``
+- ``example/``
 
-## Module Formats
+### Coding!
 
-CJS, ESModules, and UMD module formats are supported.
+Comece definindo as propriedades do design system, no caso, as cores:
 
-The appropriate paths are configured in `package.json` and `dist/index.js` accordingly. Please report if any issues are found.
+```ts
+// src/theme/colors.ts
 
-## Deploying the Example Playground
+const base = {
+	blue: '#008DBj9',
+	blueDark: '#017194',
+	orange: '#F77D04',
+	orangeDark: '#BA5E01',
+	white: '#FFFFFF',
+	gray: '#E9E9E9',
+	grayLight: '#F2F2F2',
+	almostBlack: '#4D4D4D'
+}
 
-The Playground is just a simple [Parcel](https://parceljs.org) app, you can deploy it anywhere you would normally deploy that. Here are some guidelines for **manually** deploying with the Netlify CLI (`npm i -g netlify-cli`):
+export default {
+	...base,
+	primary: base.blue,
+	primaryVariation: base.blueDark,
+	secundary: base.orange,
+	secundaryVariation: base.orangeDark,
+	background: base.white,
+	stroke: base.gray,
+	backgroundVariation: base.grayLight,
+	text: base.almostBlack
+}
 
+```
+
+Desenvolva o componente (Button):
+```tsx
+// src/components/button/Button.tsx
+
+import React, { HTMLAttributes, ReactNode } from 'react'
+import StyledButton from './Button.style'
+
+interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
+    disabled?: boolean
+    onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
+    children?: ReactNode
+}
+
+const Button: React.FC<ButtonProps> = ({ children, ...props}) => 
+    <StyledButton {...props}>
+        { children }
+    </StyledButton>
+
+Button.displayName = 'Button'
+
+Button.defaultProps = {
+    disabled: false
+}
+
+export default Button
+export { ButtonProps }
+```
+
+```ts
+// src/components/button/Button.style.ts
+
+import styled from 'styled-components'
+import colors from '../../theme/colors'
+
+const StyledButton = styled.button`
+    background: ${colors.primary};
+    box-shadow: 2px 2px 0px 2px ${colors.primaryVariation};
+    border-radius: 8px;
+    padding: 8px 16px;
+    transition: .2s;
+    border: none;
+
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 24px;
+    color: ${ colors.negativeText };
+
+    &:hover {
+        box-shadow: 3px 3px 0px 3px ${colors.primaryVariation};
+        transform: translate(-2px, -2px);
+    }
+
+    &:active {
+        box-shadow: 0px 0px 0px 0px ${colors.primaryVariation};
+        background: ${colors.primaryVariation};
+        transform: translate(3px, 3px);
+    }
+
+    &:disabled {
+        box-shadow: 0px 0px 0px 0px ${colors.primaryVariation};
+        transform: translate(0, 0) ;
+        background: ${colors.backgroundVariation};
+        color: ${colors.text};
+    }
+`
+
+export default StyledButton
+```
+
+E então monte o story pro componente:
+```tsx
+// src/components/button/Button.stories.tsx
+
+import React from 'react'
+import { ComponentStory, ComponentMeta } from '@storybook/react'
+import Button from './Button'
+
+export default {
+    title: 'Components/Button',
+    component: Button,
+    args: Button.defaultProps
+} as ComponentMeta<typeof Button>
+
+const Template: ComponentStory<typeof Button> = (args) =>
+    <Button {...args}>Click me!</Button>
+
+export const Default = Template.bind({});
+```
+
+Exporte o component em ``src/index.ts``:
+```ts
+// src/index.ts
+
+import Button from './components/button/Button'
+
+export {
+    Button
+}
+```
+
+# NPM
+- [Crie sua conta no npm](https://www.npmjs.com/signup)
+- [ou faça o login](https://www.npmjs.com/login)
+
+No terminal, digite o comando para fazer o login
 ```bash
-cd example # if not already in the example folder
-npm run build # builds to dist
-netlify deploy # deploy the dist folder
+npm login
 ```
 
-Alternatively, if you already have a git repo connected, you can set up continuous deployment with Netlify:
+Ajuste o arquivo ``package.json`` com suas preferências. Por exemplo, alterar o nome do pacote para um nome único usando o formato ``@username/package-name``.
 
+Execute o seguinte comando para empacotar o projeto:
 ```bash
-netlify init
-# build command: yarn build && cd example && yarn && yarn build
-# directory to deploy: example/dist
-# pick yes for netlify.toml
+npm run build
 ```
 
-## Named Exports
-
-Per Palmer Group guidelines, [always use named exports.](https://github.com/palmerhq/typescript#exports) Code split inside your React app instead of your React library.
-
-## Including Styles
-
-There are many ways to ship styles, including with CSS-in-JS. TSDX has no opinion on this, configure how you like.
-
-For vanilla CSS, you can include it at the root directory and add it to the `files` section in your `package.json`, so that it can be imported separately by your users and run through their bundler's loader.
-
-## Publishing to NPM
-
-We recommend using [np](https://github.com/sindresorhus/np).
-
-## Usage with Lerna
-
-When creating a new package with TSDX within a project set up with Lerna, you might encounter a `Cannot resolve dependency` error when trying to run the `example` project. To fix that you will need to make changes to the `package.json` file _inside the `example` directory_.
-
-The problem is that due to the nature of how dependencies are installed in Lerna projects, the aliases in the example project's `package.json` might not point to the right place, as those dependencies might have been installed in the root of your Lerna project.
-
-Change the `alias` to point to where those packages are actually installed. This depends on the directory structure of your Lerna project, so the actual path might be different from the diff below.
-
-```diff
-   "alias": {
--    "react": "../node_modules/react",
--    "react-dom": "../node_modules/react-dom"
-+    "react": "../../../node_modules/react",
-+    "react-dom": "../../../node_modules/react-dom"
-   },
+E publique o pacote:
+```bash
+npm publish --accesss public
 ```
 
-An alternative to fixing this problem would be to remove aliases altogether and define the dependencies referenced as aliases as dev dependencies instead. [However, that might cause other problems.](https://github.com/palmerhq/tsdx/issues/64)
+E pronto, seu pacote estará disponível em alguns segundos!
+
+# Referências
+Youtube:
+- [O DESIGN SYSTEM DA ROCKESEAT (DA UI AO CÓDIGO) - Rocketseat](https://www.youtube.com/watch?v=90y5707fJbI)
+- [Create your own design system! with Storybook React and TypeScript | Storybook 6 Crash Course - Marius Espejo](https://www.youtube.com/watch?v=qSkHRVLcj6U)
+
+Medium:
+- [Entendendo Design Systems - Vanessa Serradas](https://brasil.uxdesign.cc/entendendo-design-system-f375bbb6f704)
+- [A Design System isn’t a Project. It’s a Product, Serving Products. - Nathan Curtis](https://medium.com/eightshapes-llc/a-design-system-isn-t-a-project-it-s-a-product-serving-products-74dcfffef935)
+- [A Maturity Model for Design Systems — Ben Callahan @Sparkbox — ENG - Kentaro Hosomi](https://medium.com/yousign-engineering-product/a-maturity-model-for-design-systems-ben-callahan-sparkbox-eng-173215652f95)
+
