@@ -85,7 +85,7 @@ Comece definindo as propriedades do design system, no caso, as cores:
 // src/theme/colors.ts
 
 const base = {
-	blue: '#008DBj9',
+	blue: '#008DB9',
 	blueDark: '#017194',
 	orange: '#F77D04',
 	orangeDark: '#BA5E01',
