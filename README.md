@@ -10,7 +10,7 @@ Desenvolvimento de Design System com React e Storybook - Minicurso PET-BCC
 # Design System
 
 
-Design System é um conjunto de componentes e propriedades de desing	para facilitar o desenvolvimento de um produto mantendo a mesma identidade visual.
+Design System é um conjunto de componentes e propriedades de design para facilitar o desenvolvimento de um produto mantendo a mesma identidade visual.
 
 É interessante pensar no Design System como um produto que serve outros produtos:
 
