@@ -1,6 +1,8 @@
 
 Desenvolvimento de Design System com React e Storybook - Minicurso PET-BCC
 
+[Gravação no YouTube](https://www.youtube.com/watch?v=72VggFnWlCM)
+
 # Sumário
 - [Design System](#design-system)
 - [Desenvolvimento](#desenvolvimento)
